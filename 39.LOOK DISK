@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void lookScheduling(int tracks[], int n, int headPosition) {
+    int totalHeadMovement = 0;
+
+    int i, currentTrack;
+    int lowerBound = 0, upperBound = 199;
+
+    // Sort the tracks in ascending order
+    for (i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (tracks[j] > tracks[j + 1]) {
+                int temp = tracks[j];
+                tracks[j] = tracks[j + 1];
+                tracks[j + 1] = temp;
+            }
+        }
+    }
+
+    // Find the index of the track closest to the head position
+    for (i = 0; i < n; i++) {
+        if (tracks[i] > headPosition) {
+            currentTrack = i;
+            break;
+        }
+    }
+
+    // Calculate head movement for the upward scan
+    for (i = currentTrack; i < n; i++) {
+        printf("Head movement: %d to %d\n", headPosition, tracks[i]);
+        totalHeadMovement += abs(headPosition - tracks[i]);
+        headPosition = tracks[i];
+    }
+
+    // Calculate head movement for the downward scan
+    for (i = currentTrack - 1; i >= 0; i--) {
+        printf("Head movement: %d to %d\n", headPosition, tracks[i]);
+        totalHeadMovement += abs(headPosition - tracks[i]);
+        headPosition = tracks[i];
+    }
+
+    printf("\nTotal Head Movement: %d\n", totalHeadMovement);
+    printf("Average Head Movement: %.2f\n", (float)totalHeadMovement / n);
+}
+
+int main() {
+    int tracks[] = {55, 58, 60, 70, 18};
+    int numTracks = sizeof(tracks) / sizeof(tracks[0]);
+    int headPosition = 50; // Assuming the initial head position
+
+    printf("Track Positions: ");
+    for (int i = 0; i < numTracks; i++) {
+        printf("%d ", tracks[i]);
+    }
+    printf("\n\n");
+
+    lookScheduling(tracks, numTracks, headPosition);
+
+    return 0;
+}
